@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="オフィス課題調査">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-180.png">
+<title>オフィス課題調査</title>
+<style>
+:root{--navy:#11344c;--blue:#2c79b3;--green:#73b84e;--bg:#f4f8f9;--line:#d7e2e7;--muted:#6b7a85}
+*{box-sizing:border-box}html,body{margin:0;background:var(--bg);color:var(--navy);font-family:-apple-system,BlinkMacSystemFont,"Yu Gothic",Meiryo,sans-serif}
+button,input{font:inherit}.hidden{display:none!important}.app{max-width:1366px;margin:auto;padding:14px 18px}
+.head{display:flex;justify-content:space-between;gap:14px;align-items:flex-start;margin-bottom:12px}
+h1{font-size:clamp(32px,4.2vw,58px);line-height:1.12;margin:0;font-weight:900}.sub{margin:8px 0 0;color:var(--muted);font-weight:700;font-size:17px}
+.admin{border:1px solid var(--line);background:#fff;border-radius:12px;padding:10px 14px;color:var(--muted);font-weight:800}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(2,minmax(0,1fr));gap:14px;min-height:calc(100vh - 170px)}
+.choice{border:1.5px solid var(--line);background:#fff;border-radius:26px;min-height:220px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px;box-shadow:0 8px 24px rgba(17,52,76,.07);color:var(--navy)}
+.choice:active{transform:scale(.985)}.choice:nth-child(5){grid-column:2}.ico{width:108px;height:108px;border-radius:28px;background:#edf7fb;display:flex;align-items:center;justify-content:center;font-size:52px;margin-bottom:18px}
+.choice:nth-child(even) .ico{background:#eef8ea}.lbl{font-size:clamp(26px,3vw,40px);font-weight:900;text-align:center}.foot{margin-top:8px;display:flex;justify-content:space-between;color:var(--muted);font-size:12px}
+.stage{position:relative;min-height:calc(100vh - 28px);border-radius:26px;overflow:hidden;background:#eaf1f3;border:1px solid var(--line)}
+.stage img{width:100%;height:calc(100vh - 28px);object-fit:cover;display:block}.stage img.default{object-fit:contain}
+.overlay{position:absolute;left:22px;right:22px;bottom:20px;display:flex;justify-content:space-between;align-items:flex-end;gap:18px}.cap{background:rgba(255,255,255,.94);padding:16px 20px;border-radius:18px;max-width:70%}.cap h2{font-size:clamp(28px,3.3vw,44px);margin:0 0 4px}.cap p{margin:0;color:var(--muted)}
+.next{border:0;background:var(--navy);color:#fff;border-radius:16px;padding:16px 24px;min-width:200px;font-size:20px;font-weight:900}
+.adminGrid{display:grid;grid-template-columns:1fr 1fr;gap:16px}.panel{background:#fff;border:1px solid var(--line);border-radius:22px;padding:20px}.panel h2{margin:0 0 14px}
+label{display:block;font-weight:800;font-size:13px;margin-bottom:10px}input[type=text],input[type=password],input[type=file]{width:100%;margin-top:5px;border:1px solid var(--line);border-radius:11px;padding:10px;min-height:44px}
+.btns{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}.btn{border:0;border-radius:11px;min-height:44px;padding:10px 14px;font-weight:800}.pri{background:var(--navy);color:#fff}.sec{background:#fff;border:1px solid var(--line);color:var(--navy)}
+.res{margin:12px 0}.rh{display:flex;justify-content:space-between;font-weight:800;font-size:14px}.bar{height:10px;background:#edf2f4;border-radius:99px;margin-top:5px;overflow:hidden}.fill{height:100%;background:linear-gradient(90deg,#49b7d5,#73b84e)}
+.imgset{display:grid;grid-template-columns:1fr 1fr;gap:10px}.imgrow{display:grid;grid-template-columns:110px 1fr;gap:10px;border:1px solid var(--line);border-radius:14px;padding:9px}.thumb{width:110px;height:72px;border-radius:9px;object-fit:cover;background:#eef5f7}.mini{font-size:11px;color:var(--muted);margin:3px 0}
+dialog{border:0;border-radius:20px;max-width:420px;width:calc(100% - 32px);padding:0}dialog::backdrop{background:rgba(0,0,0,.38)}.dlg{padding:22px}
+@media(max-width:900px){.grid{grid-template-columns:1fr 1fr;grid-template-rows:auto;min-height:auto}.choice:nth-child(5){grid-column:1/3}.adminGrid,.imgset{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<main class="app">
+<section id="survey">
+  <div class="head">
+    <div><h1 id="q">オフィスでのお困り事はございますか？</h1><p class="sub">当てはまるものを1つお選びください</p></div>
+    <button id="adminBtn" class="admin" type="button">設定・集計</button>
+  </div>
+  <div class="grid">
+    <button class="choice" data-i="0"><div class="ico">👥</div><div class="lbl">① 会議室不足</div></button>
+    <button class="choice" data-i="1"><div class="ico">💬</div><div class="lbl">② 交流がない</div></button>
+    <button class="choice" data-i="2"><div class="ico">🔊</div><div class="lbl">③ 音響課題</div></button>
+    <button class="choice" data-i="3"><div class="ico">🌡️</div><div class="lbl">④ 温熱課題</div></button>
+    <button class="choice" data-i="4"><div class="ico">•••</div><div class="lbl">⑤ その他</div></button>
+  </div>
+  <div class="foot"><span>回答はこのiPad内に保存されます。</span><span id="count">回答数 0</span></div>
+</section>
+
+<section id="imageView" class="hidden">
+  <div class="stage">
+    <img id="hero" alt="">
+    <div class="overlay">
+      <div class="cap"><h2 id="heroTitle"></h2><p>ご回答ありがとうございます。こちらは選択された課題のイメージです。</p></div>
+      <button id="nextBtn" class="next">次のお客様へ</button>
+    </div>
+  </div>
+</section>
+
+<section id="adminView" class="adminGrid hidden">
+  <div class="panel">
+    <h2>表示設定</h2>
+    <form id="settings">
+      <label>見出し<input id="qEdit" type="text"></label>
+      <label>選択肢1<input data-e="0" type="text"></label>
+      <label>選択肢2<input data-e="1" type="text"></label>
+      <label>選択肢3<input data-e="2" type="text"></label>
+      <label>選択肢4<input data-e="3" type="text"></label>
+      <label>選択肢5<input data-e="4" type="text"></label>
+      <label>管理PIN<input id="pinEdit" type="password" inputmode="numeric"></label>
+      <div class="btns"><button class="btn pri">保存</button><button id="backBtn" class="btn sec" type="button">回答画面へ戻る</button></div>
+    </form>
+  </div>
+  <div class="panel">
+    <h2>回答集計 <span id="total" style="float:right"></span></h2>
+    <div id="results"></div>
+    <div class="btns"><button id="csv" class="btn sec">CSVを書き出す</button><button id="resetAns" class="btn sec">回答をリセット</button></div>
+  </div>
+  <div class="panel" style="grid-column:1/-1">
+    <h2>表示画像の変更</h2>
+    <p style="color:var(--muted);font-size:12px">横長16:9のJPG/PNGがおすすめです。画像はこのiPad内に保存されます。</p>
+    <div id="imgset" class="imgset"></div>
+    <div class="btns"><button id="resetImgs" class="btn sec">すべて初期画像に戻す</button></div>
+  </div>
+</section>
+</main>
+
+<dialog id="pinDlg"><div class="dlg"><h2>管理画面</h2><form id="pinForm"><input id="pinCheck" type="password" inputmode="numeric" placeholder="PIN"><div id="pinMsg" style="color:#b42318;margin-top:6px"></div><div class="btns"><button class="btn pri">開く</button><button id="pinCancel" class="btn sec" type="button">キャンセル</button></div></form></div></dialog>
+
+<script>
+(function(){
+const KEY="office-survey-fs-v2", DB="office-survey-fs-img", STORE="images";
+const d={question:"オフィスでのお困り事はございますか？",labels:["会議室不足","交流がない","音響課題","温熱課題","その他"],counts:[0,0,0,0,0],log:[],pin:"1234"};
+const $=s=>document.querySelector(s), $$=s=>Array.from(document.querySelectorAll(s));
+let st=load(), objUrl=null;
+
+function load(){try{const x=JSON.parse(localStorage.getItem(KEY)||"null");return x&&Array.isArray(x.labels)?x:JSON.parse(JSON.stringify(d))}catch(e){return JSON.parse(JSON.stringify(d))}}
+function save(){localStorage.setItem(KEY,JSON.stringify(st))}
+function total(){return st.counts.reduce((a,b)=>a+b,0)}
+function dbopen(){return new Promise((ok,ng)=>{const r=indexedDB.open(DB,1);r.onupgradeneeded=()=>{if(!r.result.objectStoreNames.contains(STORE))r.result.createObjectStore(STORE)};r.onsuccess=()=>ok(r.result);r.onerror=()=>ng(r.error)})}
+async function getImg(i){const db=await dbopen();return new Promise((ok,ng)=>{const t=db.transaction(STORE,"readonly"),r=t.objectStore(STORE).get(String(i));r.onsuccess=()=>ok(r.result||null);r.onerror=()=>ng(r.error)})}
+async function setImg(i,b){const db=await dbopen();return new Promise((ok,ng)=>{const t=db.transaction(STORE,"readwrite");t.objectStore(STORE).put(b,String(i));t.oncomplete=()=>ok();t.onerror=()=>ng(t.error)})}
+async function delImg(i){const db=await dbopen();return new Promise((ok,ng)=>{const t=db.transaction(STORE,"readwrite");t.objectStore(STORE).delete(String(i));t.oncomplete=()=>ok();t.onerror=()=>ng(t.error)})}
+async function clearImgs(){const db=await dbopen();return new Promise((ok,ng)=>{const t=db.transaction(STORE,"readwrite");t.objectStore(STORE).clear();t.oncomplete=()=>ok();t.onerror=()=>ng(t.error)})}
+
+function svg(i){
+ const bg=i%2?"#eef8ea":"#edf7fb", c=["#2b7bb9","#74b84f","#2b7bb9","#74b84f","#4bb8d6"][i];
+ return "data:image/svg+xml;charset=utf-8,"+encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900"><rect width="1600" height="900" fill="${bg}"/><rect x="150" y="120" width="1300" height="660" rx="32" fill="white"/><circle cx="800" cy="390" r="150" fill="${c}" opacity=".9"/><text x="800" y="420" text-anchor="middle" font-size="120" font-family="sans-serif" font-weight="700" fill="white">${i+1}</text></svg>`);
+}
+
+function render(){
+ $("#q").textContent=st.question; $$(".lbl").forEach((x,i)=>x.innerHTML=`${["①","②","③","④","⑤"][i]} ${st.labels[i]}`); $("#count").textContent="回答数 "+total();
+}
+async function showImage(i){
+ if(objUrl){URL.revokeObjectURL(objUrl);objUrl=null}
+ const b=await getImg(i).catch(()=>null), img=$("#hero");
+ if(b){objUrl=URL.createObjectURL(b);img.src=objUrl;img.classList.remove("default")}else{img.src=svg(i);img.classList.add("default")}
+ $("#heroTitle").textContent=st.labels[i];$("#survey").classList.add("hidden");$("#imageView").classList.remove("hidden");
+}
+function back(){
+ if(objUrl){URL.revokeObjectURL(objUrl);objUrl=null}
+ $("#imageView").classList.add("hidden");$("#adminView").classList.add("hidden");$("#survey").classList.remove("hidden");render();
+}
+$$(".choice").forEach(b=>b.addEventListener("click",async()=>{const i=+b.dataset.i;st.counts[i]++;st.log.push({timestamp:new Date().toISOString(),choice:i+1,label:st.labels[i]});save();render();await showImage(i)}));
+$("#nextBtn").addEventListener("click",back);
+
+function renderResults(){
+ $("#total").textContent=total()+"件";const box=$("#results");box.innerHTML="";const t=total();
+ st.labels.forEach((l,i)=>{const p=t?Math.round(st.counts[i]/t*100):0,dv=document.createElement("div");dv.className="res";dv.innerHTML=`<div class="rh"><span></span><span>${st.counts[i]}件 / ${p}%</span></div><div class="bar"><div class="fill" style="width:${p}%"></div></div>`;dv.querySelector("span").textContent=l;box.appendChild(dv)})
+}
+async function renderImgs(){
+ const box=$("#imgset");box.innerHTML="";
+ for(let i=0;i<5;i++){const b=await getImg(i).catch(()=>null),row=document.createElement("div");row.className="imgrow";const im=document.createElement("img");im.className="thumb";
+ if(b){const u=URL.createObjectURL(b);im.src=u;im.onload=()=>URL.revokeObjectURL(u)}else im.src=svg(i);
+ const r=document.createElement("div"),s=document.createElement("strong");s.textContent=(i+1)+". "+st.labels[i];const m=document.createElement("div");m.className="mini";m.textContent=b?"変更画像を使用中":"初期画像を使用中";
+ const inp=document.createElement("input");inp.type="file";inp.accept="image/*";inp.addEventListener("change",async()=>{const f=inp.files&&inp.files[0];if(f){await setImg(i,f);await renderImgs()}});
+ const reset=document.createElement("button");reset.type="button";reset.className="btn sec";reset.textContent="初期画像に戻す";reset.addEventListener("click",async()=>{await delImg(i);await renderImgs()});
+ r.append(s,m,inp,reset);row.append(im,r);box.appendChild(row)}
+}
+async function admin(){
+ $("#survey").classList.add("hidden");$("#imageView").classList.add("hidden");$("#adminView").classList.remove("hidden");
+ $("#qEdit").value=st.question;$$("[data-e]").forEach((x,i)=>x.value=st.labels[i]);$("#pinEdit").value=st.pin;renderResults();await renderImgs();
+}
+$("#adminBtn").addEventListener("click",()=>{$("#pinCheck").value="";$("#pinMsg").textContent="";$("#pinDlg").showModal()});
+$("#pinCancel").addEventListener("click",()=>$("#pinDlg").close());
+$("#pinForm").addEventListener("submit",e=>{e.preventDefault();if($("#pinCheck").value===st.pin){$("#pinDlg").close();admin()}else $("#pinMsg").textContent="PINが違います。"});
+$("#backBtn").addEventListener("click",back);
+$("#settings").addEventListener("submit",e=>{e.preventDefault();const q=$("#qEdit").value.trim(),ls=$$("[data-e]").map(x=>x.value.trim()),p=$("#pinEdit").value.trim();if(!q||ls.some(x=>!x)||!/^[0-9]{4,8}$/.test(p)){alert("入力内容を確認してください。");return}st.question=q;st.labels=ls;st.pin=p;save();renderResults();renderImgs();alert("設定を保存しました。")});
+$("#resetAns").addEventListener("click",()=>{if(confirm("回答を削除しますか？")){st.counts=[0,0,0,0,0];st.log=[];save();render();renderResults()}});
+$("#resetImgs").addEventListener("click",async()=>{if(confirm("画像を初期状態に戻しますか？")){await clearImgs();await renderImgs()}});
+$("#csv").addEventListener("click",()=>{const rows=[["timestamp","choice","label"],...st.log.map(x=>[x.timestamp,x.choice,x.label])],esc=v=>`"${String(v).replace(/"/g,'""')}"`,csv="\uFEFF"+rows.map(r=>r.map(esc).join(",")).join("\r\n"),blob=new Blob([csv],{type:"text/csv;charset=utf-8"}),u=URL.createObjectURL(blob),a=document.createElement("a");a.href=u;a.download="office-survey.csv";document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),1000)});
+render();
+if("serviceWorker"in navigator)window.addEventListener("load",()=>navigator.serviceWorker.register("./sw.js?v=6").catch(()=>{}));
+})();
+</script>
+</body></html>
